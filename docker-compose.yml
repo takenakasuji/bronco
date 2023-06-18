@@ -17,3 +17,20 @@ services:
       - ./data/influxdb2:/var/lib/influxdb2
       - ./data/influxdb2_config:/etc/influxdb2
     container_name: influxdb
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    volumes:
+      - ./data/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      HOST_PROC: /rootfs/proc
+      HOST_SYS: /rootfs/sys
+      HOST_ETC: /rootfs/etc
+      INFLUXDB_HOST: influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_TOKEN: my-super-secret-auth-token
+      INFLUXDB_ORG: my-org
+      INFLUXDB_BUCKET: cpu
+      DOCKER_ALPHA_VANTAGE_API_KEY: MY_REGISTERED_KEY
+    depends_on:
+      - influxdb
