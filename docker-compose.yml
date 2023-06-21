@@ -3,6 +3,7 @@ version: "3"
 services:
   influxdb:
     image: influxdb:latest
+    container_name: influxdb
     ports:
       - "8086:8086"
     environment:
@@ -16,7 +17,6 @@ services:
     volumes:
       - ./data/influxdb2:/var/lib/influxdb2
       - ./data/influxdb2_config:/etc/influxdb2
-    container_name: influxdb
   telegraf:
     image: telegraf:latest
     container_name: telegraf
