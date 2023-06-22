@@ -34,3 +34,37 @@ services:
       DOCKER_ALPHA_VANTAGE_API_KEY: MY_REGISTERED_KEY
     depends_on:
       - influxdb
+
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: bronco
+    volumes:
+      - ./data/mongodb/primary/db:/data/db
+    expose:
+      - 27017
+    ports:
+      - "30001:27017"
+    restart: always
+    networks:
+      - bronco-nw
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017
+    depends_on:
+      - mongodb
+    networks:
+      - bronco-nw
+
+networks:
+  bronco-nw:
+    driver: bridge
