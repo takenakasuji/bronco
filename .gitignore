@@ -1,2 +1,4 @@
 data/influxdb2/
 data/influxdb2_config/
+data/mongodb/
+data/telegraf
