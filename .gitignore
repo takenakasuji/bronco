@@ -1,4 +1,7 @@
-data/influxdb2/
-data/influxdb2_config/
-data/mongodb/
+data/influxdb2/*
+!data/influxdb2/.gitkeep
+data/influxdb2_config/*
+!data/influxdb2_config/.gitkeep
+data/mongodb/*
+!data/mongodb/.gitkeep
 data/telegraf
