@@ -18,8 +18,12 @@ services:
       - ./data/influxdb2:/var/lib/influxdb2
       - ./data/influxdb2_config:/etc/influxdb2
   telegraf:
-    image: telegraf:latest
     container_name: telegraf
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/telegraf/Dockerfile
+    ports:
+      - "1619:1619"
     volumes:
       - ./data/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     environment:
@@ -42,7 +46,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: bronco
     volumes:
-      - ./data/mongodb/primary/db:/data/db
+      - ./data/mongodb/db:/data/db
     expose:
       - 27017
     ports:
