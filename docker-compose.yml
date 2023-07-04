@@ -17,27 +17,19 @@ services:
     volumes:
       - ./data/influxdb2:/var/lib/influxdb2
       - ./data/influxdb2_config:/etc/influxdb2
-  telegraf:
-    container_name: telegraf
+
+  relay-github-influxdb:
+    container_name: relay-github-influxdb
     build:
       context: .
-      dockerfile: ./Dockerfiles/telegraf/Dockerfile
+      dockerfile: ./Dockerfiles/relay-github-influxdb/Dockerfile
     ports:
-      - "1619:1619"
-    volumes:
-      - ./data/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - "3000:3000"
     environment:
-      HOST_PROC: /rootfs/proc
-      HOST_SYS: /rootfs/sys
-      HOST_ETC: /rootfs/etc
-      INFLUXDB_HOST: influxdb
-      INFLUXDB_PORT: 8086
-      INFLUXDB_TOKEN: my-super-secret-auth-token
-      INFLUXDB_ORG: my-org
-      INFLUXDB_BUCKET: cpu
-      DOCKER_ALPHA_VANTAGE_API_KEY: MY_REGISTERED_KEY
-    depends_on:
-      - influxdb
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_TOKEN=my-super-secret-auth-token
+    volumes:
+      - ./src/relay-webhook-influxdb:/go/src/relay-webhook-influxdb
 
   mongodb:
     image: mongo
