@@ -16,18 +16,24 @@ func Github(githubApp application.GithubApplicationService) func(c *fiber.Ctx) e
 		if eventType == "" {
 			return fiber.NewError(fiber.StatusBadRequest, "X-Github-Event has no value")
 		}
-		e := githubEventRouter(eventType, c)
+		e, err := githubEventRouter(eventType, c)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Request parse error")
+		}
 		return c.JSON(githubApp.WriteEvent(e))
 	}
 }
 
-func githubEventRouter(eventType string, c *fiber.Ctx) *write.Point {
+func githubEventRouter(eventType string, c *fiber.Ctx) (*write.Point, error) {
 	switch eventType {
 	case "pull_request":
 		e := model.PullRequestEvent{}
-		_ = c.BodyParser(&e)
+		err := c.BodyParser(&e)
+		if err != nil {
+			return nil, err
+		}
 		m := dto.PullRequestMetric{}
-		return m.NewMetric(e)
+		return m.NewMetric(e), nil
 	}
-	return nil
+	return nil, nil
 }
