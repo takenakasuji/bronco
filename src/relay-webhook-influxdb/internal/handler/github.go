@@ -34,6 +34,14 @@ func githubEventRouter(eventType string, c *fiber.Ctx) (*write.Point, error) {
 		}
 		m := dto.PullRequestMetric{}
 		return m.NewMetric(e), nil
+	case "issues":
+		e := model.IssuesEvent{}
+		err := c.BodyParser(&e)
+		if err != nil {
+			return nil, err
+		}
+		m := dto.IssuesMetric{}
+		return m.NewMetric(e), nil
 	}
 	return nil, nil
 }

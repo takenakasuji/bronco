@@ -39,3 +39,27 @@ func (e PullRequestMetric) NewMetric(s model.PullRequestEvent) *write.Point {
 		time.Now(),
 	)
 }
+
+type IssuesMetric struct{}
+
+func (e IssuesMetric) NewMetric(s model.IssuesEvent) *write.Point {
+	return influxdb2.NewPoint("issues",
+		map[string]string{
+			"event":      "issues",
+			"action":     s.Action,
+			"repository": s.Repository.Repository,
+			"private":    fmt.Sprintf("%v", s.Repository.Private),
+			"user":       s.Sender.User,
+			"admin":      fmt.Sprintf("%v", s.Sender.Admin),
+			"issue":      fmt.Sprintf("%v", s.Issue.Number),
+		},
+		map[string]interface{}{
+			"stars":    s.Repository.Stars,
+			"forks":    s.Repository.Forks,
+			"issues":   s.Repository.Issues,
+			"title":    s.Issue.Title,
+			"comments": s.Issue.Comments,
+		},
+		time.Now(),
+	)
+}
