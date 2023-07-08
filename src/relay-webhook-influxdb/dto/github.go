@@ -129,3 +129,25 @@ func (e CreateMetric) NewMetric(s model.CreateEvent) *write.Point {
 		time.Now(),
 	)
 }
+
+type DeleteMetric struct{}
+
+func (e DeleteMetric) NewMetric(s model.DeleteEvent) *write.Point {
+	return influxdb2.NewPoint("delete",
+		map[string]string{
+			"event":      "delete",
+			"repository": s.Repository.Repository,
+			"private":    fmt.Sprintf("%v", s.Repository.Private),
+			"user":       s.Sender.User,
+			"admin":      fmt.Sprintf("%v", s.Sender.Admin),
+		},
+		map[string]interface{}{
+			"stars":   s.Repository.Stars,
+			"forks":   s.Repository.Forks,
+			"issues":  s.Repository.Issues,
+			"ref":     s.Ref,
+			"refType": s.RefType,
+		},
+		time.Now(),
+	)
+}
