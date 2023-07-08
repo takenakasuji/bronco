@@ -86,3 +86,24 @@ func (e PushMetric) NewMetric(s model.PushEvent) *write.Point {
 		time.Now(),
 	)
 }
+
+type ReleaseMetric struct{}
+
+func (e ReleaseMetric) NewMetric(s model.ReleaseEvent) *write.Point {
+	return influxdb2.NewPoint("release",
+		map[string]string{
+			"event":      "release",
+			"repository": s.Repository.Repository,
+			"private":    fmt.Sprintf("%v", s.Repository.Private),
+			"user":       s.Sender.User,
+			"admin":      fmt.Sprintf("%v", s.Sender.Admin),
+		},
+		map[string]interface{}{
+			"stars":   s.Repository.Stars,
+			"forks":   s.Repository.Forks,
+			"issues":  s.Repository.Issues,
+			"tagName": s.Release.TagName,
+		},
+		time.Now(),
+	)
+}
