@@ -58,6 +58,14 @@ func githubEventRouter(eventType string, c *fiber.Ctx) (*write.Point, error) {
 		}
 		m := dto.ReleaseMetric{}
 		return m.NewMetric(e), nil
+	case "create":
+		e := model.CreateEvent{}
+		err := c.BodyParser(&e)
+		if err != nil {
+			return nil, err
+		}
+		m := dto.CreateMetric{}
+		return m.NewMetric(e), nil
 	}
 	return nil, nil
 }
