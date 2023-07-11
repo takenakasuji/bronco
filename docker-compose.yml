@@ -28,6 +28,7 @@ services:
     environment:
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_TOKEN=my-super-secret-auth-token
+      - GITHUB_APP_SECRET=TYPE_YOUR_SECRET
     volumes:
       - ./src/relay-webhook-influxdb:/go/src/relay-webhook-influxdb
 
