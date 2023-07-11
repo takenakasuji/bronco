@@ -1,17 +1,26 @@
 package handler
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/influxdata/influxdb-client-go/v2/api/write"
 	"github.com/takenakasuji/bronco/src/relay-webhook-github/dto"
 	"github.com/takenakasuji/bronco/src/relay-webhook-github/internal/application"
 	model "github.com/takenakasuji/bronco/src/relay-webhook-github/internal/model/github"
+	"github.com/takenakasuji/bronco/src/relay-webhook-github/library"
 )
-
-//TODO: secretの実装
 
 func Github(githubApp application.GithubApplicationService) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
+		httpReq, err := adaptor.ConvertRequest(c, false)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Convert request error")
+		}
+		if r := library.GithubValidatePayload(httpReq, os.Getenv("GITHUB_APP_SECRET")); r == false {
+			return fiber.NewError(fiber.StatusInternalServerError, "Unable to parse secret")
+		}
 		eventType := c.Get("X-Github-Event")
 		if eventType == "" {
 			return fiber.NewError(fiber.StatusBadRequest, "X-Github-Event has no value")
