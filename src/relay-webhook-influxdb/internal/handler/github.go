@@ -29,7 +29,12 @@ func Github(githubApp application.GithubApplicationService) func(c *fiber.Ctx) e
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Request parse error")
 		}
-		return c.JSON(githubApp.WriteEvent(e))
+		r := c.Body()
+		err = c.JSON(githubApp.WriteEvent(e, r))
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "github write event error")
+		}
+		return c.Status(fiber.StatusOK).JSON("github write event success")
 	}
 }
 

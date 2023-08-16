@@ -17,6 +17,8 @@ services:
     volumes:
       - ./data/influxdb2:/var/lib/influxdb2
       - ./data/influxdb2_config:/etc/influxdb2
+    networks:
+      - bronco-nw
 
   relay-github-influxdb:
     container_name: relay-github-influxdb
@@ -31,6 +33,11 @@ services:
       - GITHUB_APP_SECRET=TYPE_YOUR_SECRET
     volumes:
       - ./src/relay-webhook-influxdb:/go/src/relay-webhook-influxdb
+    depends_on:
+      - mongodb
+      - influxdb
+    networks:
+      - bronco-nw
 
   mongodb:
     image: mongo
