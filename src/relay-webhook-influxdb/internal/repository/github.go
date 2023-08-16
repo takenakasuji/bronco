@@ -16,8 +16,8 @@ type githubRepository struct {
 	writeAPI api.WriteAPIBlocking
 }
 
-func NewGithubRepository(client influxdb2.Client) GithubRepository {
-	writeAPI := client.WriteAPIBlocking("my-org", "github")
+func NewGithubRepository(tsClient influxdb2.Client) GithubRepository {
+	writeAPI := tsClient.WriteAPIBlocking("my-org", "github")
 	return &githubRepository{
 		writeAPI: writeAPI,
 	}
